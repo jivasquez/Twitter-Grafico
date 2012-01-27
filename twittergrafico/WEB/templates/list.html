@@ -1,0 +1,54 @@
+<%inherit file="main.html"/>
+<%def name="scripts()">
+<script src="http://cdn.jquerytools.org/1.2.6/jquery.tools.min.js"></script>
+<script src="http://cdn.jquerytools.org/1.2.6/all/jquery.tools.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	$("img[rel]").overlay();
+	// initialize tooltip
+	$("img[title]").tooltip({
+
+	   // tweak the position
+	   offset: [10, 2],
+
+	   // use the "slide" effect
+	   effect: 'slide'
+
+	// add dynamic plugin with optional configuration for bottom edge
+	}).dynamic({ bottom: { direction: 'down', bounce: true } });
+	});
+</script>
+
+<link rel="stylesheet" href="static/css/overlay.css">
+<link rel="stylesheet" href="static/css/tooltip.css">
+</%def>
+
+
+<%def name="main()">
+<h1 class="blue">Tweet images for jivasquez0</h1>
+
+<div class="row">
+	<ul class="media-grid">
+	% for tweet in messages:
+		% if tweet.image:
+		<li>
+		<img src="${tweet.image}" rel="#tweet${tweet.id}" title="${tweet.message}" class="thumbnail">
+	    </li>
+		% endif
+	% endfor
+	  </ul>
+	
+	% for tweet in messages:
+	% if tweet.image:
+	<div class="simple_overlay" id="tweet${tweet.id}"><a class="close_button"></a>
+		<a href="${tweet.url}" target="blanc"><img src="${tweet.image}" title="${tweet.message}" class="image"/><a>
+	
+		<div class="details">
+			<p>${tweet.message}</p>
+		</div>		
+	</div>
+	% endif
+	% endfor
+		
+</div>
+</%def>

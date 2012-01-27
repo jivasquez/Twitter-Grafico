@@ -1,0 +1,69 @@
+<%inherit file="main.html"/>
+<%def name="scripts()">
+<script src="/static/tooltip/jquery.tools.min.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	$("img[rel]").overlay();
+	$("pre[rel]").overlay();
+	// initialize tooltip
+	$("img[title]").tooltip({
+
+	   // tweak the position
+	   offset: [10, 2],
+
+	   // use the "slide" effect
+	   effect: 'slide'
+
+	// add dynamic plugin with optional configuration for bottom edge
+	}).dynamic({ bottom: { direction: 'down', bounce: true } });
+	});
+</script>
+
+<link rel="stylesheet" href="static/css/overlay.css">
+<link rel="stylesheet" href="static/css/tooltip.css">
+</%def>
+
+
+<%def name="main()">
+
+<h1 class="blue">Clustered Tweet images for jivasquez0</h1>
+
+<div class="row">
+	<ul class="media-grid">
+	% for index, tweet in representative.iteritems():
+	<li>
+		% if tweet.image:
+		<img src="${tweet.image}" rel="#cluster${index}" title="${tweet.message}" class="thumbnail pointer">
+		% else:
+			<pre style="width: 200;" class="pointer" rel="#cluster${index}">${tweet.message}</pre>
+		% endif
+	    </li>
+	% endfor
+	  </ul>
+	
+	% for index, tweets in enumerate(clusters):
+	<div class="simple_overlay" id="cluster${index}"><a class="close_button"></a>
+		<div class="images">
+			% for tweet in tweets:
+			% if tweet.url:
+			<a href="${tweet.url}" target="blanc">
+				% if tweet.image: 
+				<img src="${tweet.image}" title="${tweet.message}" class="image"/>
+				%else:
+				<pre style="width: 200;">${tweet.message}</pre>
+				% endif
+			<a>
+			% else:
+			<pre style="width: 200;">${tweet.message}</pre>
+			% endif
+			% endfor
+		</div>
+		<div class="details">
+			<p>${representative[index].message}</p>
+		</div>
+	</div>
+	% endfor
+		
+</div>
+</%def>

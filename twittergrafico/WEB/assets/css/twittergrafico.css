@@ -1,0 +1,10 @@
+body { 
+    background-image: url(../img/grey-twitter.jpg);
+    background-size: 100%;
+    background-repeat: repeat-y;
+    background-attachment: fixed;
+    }
+    
+h1.blue {
+    color: #437EA1;
+}
