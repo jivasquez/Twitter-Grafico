@@ -1,7 +1,7 @@
 <%inherit file="main.html"/>
 <%def name="scripts()">
-<script src="http://cdn.jquerytools.org/1.2.6/jquery.tools.min.js"></script>
-<script src="http://cdn.jquerytools.org/1.2.6/all/jquery.tools.min.js"></script>
+<script src="/static/tooltip/jquery.tools.min.js" type="text/javascript" charset="utf-8"></script>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 	$("img[rel]").overlay();
@@ -36,12 +36,12 @@
 	    </li>
 		% endif
 	% endfor
-	  </ul>
+	</ul>
 	
 	% for tweet in messages:
 	% if tweet.image:
 	<div class="simple_overlay" id="tweet${tweet.id}"><a class="close_button"></a>
-		<a href="${tweet.url}" target="blanc"><img src="${tweet.image}" title="${tweet.message}" class="image"/><a>
+		<div><a href="${tweet.url}" target="blanc"><img src="${tweet.image}" title="${tweet.message}" class="image"/></a></div>
 	
 		<div class="details">
 			<p>${tweet.message}</p>
