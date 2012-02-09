@@ -28,11 +28,17 @@
 <h1 class="blue">Tweet images for jivasquez0</h1>
 
 <div class="row">
-	<ul class="media-grid">
+	<ul class="thumbnails">
 	% for tweet in messages:
 		% if tweet.image:
-		<li>
-		<img src="${tweet.image}" rel="#tweet${tweet.id}" title="${tweet.message}" class="thumbnail">
+			<% massive = '' %>
+			% if tweet.massive:
+				<% massive = 'massive' %>
+			% endif
+		<li class="span3 ${massive}">
+		<a class="thumbnail">
+		<img src="${tweet.image}" rel="#tweet${tweet.id}" title="${tweet.message}">
+		</a>
 	    </li>
 		% endif
 	% endfor
@@ -41,7 +47,7 @@
 	% for tweet in messages:
 	% if tweet.image:
 	<div class="simple_overlay" id="tweet${tweet.id}"><a class="close_button"></a>
-		<div><a href="${tweet.url}" target="blanc"><img src="${tweet.image}" title="${tweet.message}" class="image"/></a></div>
+		<div><a href="${tweet.url}" target="blanc" ><img src="${tweet.image}" title="${tweet.message}" class="thumbnail"/></a></div>
 	
 		<div class="details">
 			<p>${tweet.message}</p>

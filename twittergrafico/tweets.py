@@ -6,20 +6,28 @@ import twitter
 from pymongo import Connection
 from twittergrafico.agrupacion import Clustering
 from twittergrafico.seleccion import Seleccion
+from twittergrafico.user import User
+
+MASSIVE_USER_FOLLOWERS = 3000
 
 class Twitter_DAO(object):
     
     # I have to include the Mongo config
     
-    def __init__(self, id, user, message, host = 'localhost', database = 'twitter_grafico'):
-        self.id = id
-        self.user = user
-        self.message = message
-        self.url = self.get_url(message)
+    def __init__(self, tweet, host = 'localhost', database = 'twitter_grafico'):
+        
+        self.id = tweet.id
+        self.user = tweet.user.id
+        self.message = tweet.text
+        self.created_at = tweet.created_at
+        self.url = self.get_url(self.message)
+        User(tweet.user.id, tweet.user.screen_name, tweet.user.followers_count).save()
         connection = Connection(host = host)
-        result = connection[database].tweets.find_one({"id":id})
+        result = connection[database].tweets.find_one({"id":self.id})
         self.image = None
         self.keywords = None
+        self.massive = False
+        self.check_massive_users(tweet.user)
         if result:
             self.image = result.get('image')
             self.text = result.get('text')
@@ -58,8 +66,7 @@ class Twitter_DAO(object):
         tweets = api.GetFriendsTimeline(user=user.user_id, count=limit, include_entities=True)
         tweet_objects = []
         for tweet in tweets:
-            tweet_objects.append(Twitter_DAO(tweet.id, tweet.user.id, tweet.text))
-        # should return Twitter_DAO objects
+            tweet_objects.append(Twitter_DAO(tweet))
         return tweet_objects
 
     def save(self, host = 'localhost', database = 'twitter_grafico'):
@@ -72,6 +79,15 @@ class Twitter_DAO(object):
         connection.disconnect()
     
     @staticmethod
+    def get_messages_from_search(search):
+        api = twitter.Api()
+        tweets = api.GetSearch(term=search, per_page=50)
+        tweet_objects = []
+        for tweet in tweets:
+            tweet_objects.append(Twitter_DAO(tweet))
+        return tweet_objects
+    
+    @staticmethod
     def get_url(message):
         url = re.search("((https?|ftp|gopher|telnet|file|notes|ms-help):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", message)
         if url:
@@ -81,43 +97,41 @@ class Twitter_DAO(object):
     @staticmethod
     def get_representative_image_keywords(url):
         # Returns the image and info if the image exists, otherwise returns None
-        http = httplib2.Http()
-        headers, content = http.request(url)
-        parser = etree.HTMLParser()
-        tree = etree.fromstring(content, parser)
-        image_url = tree.xpath('.//meta[@property="og:image"]/@content')
-        keywords = tree.xpath('.//meta[@name="keywords"]/@content')
-        raw_text = tree.xpath('.//p/text()')
-        raw_strong = tree.xpath('.//strong/text()')
-        text = ''
-        for paragraph in raw_text:
-            text = text + paragraph
-        for words in raw_strong:
-            text = text + paragraph
+        http = httplib2.Http(timeout=5)
+        try:
+            headers, content = http.request(url)
+            parser = etree.HTMLParser()
+            tree = etree.fromstring(content, parser)
+            image_url = tree.xpath('.//meta[@property="og:image"]/@content')
+            keywords = tree.xpath('.//meta[@name="keywords"]/@content')
+            raw_text = tree.xpath('.//p/text()')
+            raw_strong = tree.xpath('.//strong/text()')
+            text = ''
+            for paragraph in raw_text:
+                text = text + paragraph
+            for words in raw_strong:
+                text = text + words
             
-        print raw_strong
-        if len(image_url) == 0:
-            image_url = tree.xpath('.//link[@rel="image_src"]/@href')
-        if len(image_url) == 0:
+            print raw_strong
+            if len(image_url) == 0:
+                image_url = tree.xpath('.//link[@rel="image_src"]/@href')
+            if len(image_url) == 0:
+                image_url = None
+            else:
+                image_url = image_url[0]
+            if len(keywords) == 0:
+                keywords = None
+            else:
+                keywords = keywords[0]
+        except:
             image_url = None
-        else:
-            image_url = image_url[0]
-        if len(keywords) == 0:
             keywords = None
-        else:
-            keywords = keywords[0]
+            text = None
         # The title and the description have information about the site, not about the news, so it's not useful
         return {'image': image_url, 'keywords': keywords , 'text': text}
-    
 
-# if __name__ == "__main__":
-#     # This should be out of here.  
-#     messages = Twitter_DAO.get_twitter_messages('', 10)
-#     for message in messages:
-#             pass
-#     clustering = Clustering(messages, 'jivasquez0')
-#     clusters = clustering.clusters
-#     print clusters
-#     filename = clustering.filename+'.info'
-#     seleccion = Seleccion(clusters, filename)
-#     print seleccion.representative_tweets
+
+    def check_massive_users(self, user):
+        if user.followers_count > MASSIVE_USER_FOLLOWERS:
+            self.massive = True
+    

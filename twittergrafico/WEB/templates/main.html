@@ -2,35 +2,87 @@
 	<head>
 		<title>Twitter Gráfico</title>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<link rel="stylesheet/less" href="static/bootstrap/lib/bootstrap.less">
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-		<script src="static/less/less-1.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--link rel="stylesheet/less" href="static/bootstrap/lib/bootstrap.less"-->
+		<script src="static/js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="static/bootstrap/js/bootstrap-modal.js"></script>
+		<script src="static/bootstrap/js/bootstrap-transition.js"></script>
+		<script src="static/bootstrap/js/bootstrap-dropdown.js"></script>
+		<!--script src="static/less/less-1.2.1.min.js" type="text/javascript" charset="utf-8"></script-->
 		<link rel="stylesheet" href="static/css/twittergrafico.css">
+		<link rel="stylesheet" href="static/bootstrap/css/bootstrap.css">
 		${self.scripts()}
 	</head>
 	<body>
-		<div class="topbar-wrapper" style="z-index: 5;">
-		    <div class="topbar" data-dropdown="dropdown">
-		      <div class="topbar-inner">
-		        <div class="container">
-		          <h3><a href="#">Twitter Gráfico</a></h3>
+		<div class="navbar">
+		  <div class="navbar-inner">
+		    <div class="container">
+				<a class="brand" href="#">
+				  Twitter Gráfico
+				</a>
 		          <ul class="nav">
-		            <li class="active"><a href="/home">Home</a></li>
-		            <li><a href="/list">List</a></li>
-		            <li><a href="/clustered_tweets">Clustered Tweets</a></li>
-		            <li><a href="/clustered_keywords">Clustered Keywords</a></li>
-		             <li><a href="/login">Login</a></li>
-		          </ul>
-		          <ul class="nav secondary-nav">
-		            <li><a href="/logout">Logout</a></li>
+		            <li id="home"><a href="/home">Inicio</a></li>
+		            <li id="list"><a href="/list">Lista</a></li>
+		            <li id="clustered_tweets"><a href="/clustered_tweets">Clustered Tweets</a></li>
+		            <li id="clustered_keywords"><a href="/clustered_keywords">Clustered Keywords</a></li>
+					<li id="clustered_keywords"><a href="/maxtf">Max TF</a></li>
+					% if not user:
+					<li id="register"><a href="/register">Registrar</a></li>
+					% endif
+					</ul>
+					<form class="navbar-search pull-left" action="search" method="GET">
+					  <input type="text" class="search-query span2" placeholder="Búsqueda" name="q">
+					</form>
+		          <ul class="nav pull-right">
+					% if user:
+					<li class="dropdown">
+					    <a href="#"
+					          class="dropdown-toggle"
+					          data-toggle="dropdown">
+					          ${user.username}
+					          <b class="caret"></b>
+					    </a>
+					    <ul class="dropdown-menu">
+					    	<li><a href="/logout">Logout</a></li>
+					    </ul>
+					  </li>
+					% else:
+					<li><a data-toggle="modal" href="#login_div">Login</a></li>
+		            % endif
 		          </ul>
 		        </div>
-		      </div><!-- /topbar-inner -->
-		    </div><!-- /topbar -->
+		      </div>
 		</div>
 		<br/>
 		<div class="container" style="padding-top: 40px;">
 			${self.main()}
+		</div>
+		<div class="modal hide fade" id="login_div" >
+
+		    <a class="close" data-dismiss="modal">×</a>
+
+		  <div class="modal-body">
+		    <form id="login" class="form-horizontal" action="login" method="POST">
+				<fieldset>
+					<div class="register">
+						<div class="control-group">
+							<label class="control-label">Username</label>
+							<div class="controls">
+							<input type="text" id="username" name="username"/>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">Password</label>
+							<div class="controls">
+							<input type="password" id="password" name="password"/>
+							</div>
+						</div>
+						<div class="form-actions">
+							<button type="submit" class="btn btn-primary">Iniciar sesión</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		  </div>
 		</div>
 	</body>
 </html>

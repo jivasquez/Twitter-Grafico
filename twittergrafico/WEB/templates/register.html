@@ -1,0 +1,37 @@
+<%inherit file="main.html"/>
+
+
+<%def name="main()">
+	<div class="row">
+		<div class="span8">
+			<form id="register" class="form-horizontal" action="register_account" method="POST">
+				<fieldset>
+					<legend>Form control states</legend>
+					<div class="register">
+						<div class="control-group">
+							<label class="control-label">Username</label>
+							<div class="controls">
+							<input type="text" id="username" name="username"/>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">Password</label>
+							<div class="controls">
+							<input type="password" id="password" name="password"/>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">Repeat password</label>
+							<div class="controls">
+							<input type="password" id="repeat" name="repeat"/>
+							</div>
+						</div>
+						<div class="form-actions">
+							<button type="submit" class="btn btn-primary">Continuar</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</%def>

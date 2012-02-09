@@ -20,7 +20,6 @@ class Clustering():
             text = tweet.message
             if text_source=='keywords' and tweet.keywords:
                 text = tweet.keywords
-                print text
             #for now we use just the message
             file.write(unicode(text+'\n').encode("utf-8"))
         file.close()
