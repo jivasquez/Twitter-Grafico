@@ -3,20 +3,52 @@
 <script src="/static/tooltip/jquery.tools.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-	$("img[rel]").overlay();
-	$("pre[rel]").overlay();
-	// initialize tooltip
-	$("img[title]").tooltip({
+	$(window).load(function() {
+		$.post(document.location.pathname, {}, function(data){
+			$('#loading').remove();
+			for(message in data['representative']){
+				if(data['representative'][message]['image']){
+					$('#representative').append('<li class="span3"><a class="thumbnail"><img src="'+ data['representative'][message]['image'] +'" rel="#cluster'+ message +'" title="'+ data['representative'][message]['message'] +'"></a></li>');
+				}
+				else{
+					$('#representative').append('<li><pre style="width: 200;" class="pointer" rel="#cluster'+ message +'">'+ data['representative'][message]['message'] +'</pre></li>')
+				}
+				$('div.row').append('<div class="simple_overlay" id="cluster'+ message +'"><a class="close_button"></a><div class="details"><p>'+ data['representative'][message]['image'] +'</p></div><ul class="thumbnails"></ul></div>');
+				for(tweet in data['clusters'][message]){
+					text = '';
+					if(data['clusters'][message][tweet]['url']){
+						text = '<a href="'+ data['clusters'][message][tweet]['url'] +'" target="blanc">';
+						if(data['clusters'][message][tweet]['image']){
+							text = text + '<img src="'+ data['clusters'][message][tweet]['image'] +'" title="'+ data['clusters'][message][tweet]['message'] +'" class="thumbnail"/>';
+						}
+						else{
+							text = text + '<div style="width: 200;" class="well thumbnail">'+ data['clusters'][message][tweet]['message'] +'</div>';
+						}
+						text = text + '</a>';
+					}
+					else{
+						text = '<a><div style="width: 200;" class="well thumbnail">'+ data['clusters'][message][tweet]['message'] +'</div></a>';
+					}
+					$('#cluster'+ message +' ul').append('<li>'+ text +'</li>');
+				}
+			}
+		
+			$("img[rel]").overlay();
+			$("pre[rel]").overlay();
+			// initialize tooltip
+			$("img[title]").tooltip({
 
-	   // tweak the position
-	   offset: [10, 2],
+			   // tweak the position
+			   offset: [10, 2],
 
-	   // use the "slide" effect
-	   effect: 'slide'
+			   // use the "slide" effect
+			   effect: 'slide'
 
-	// add dynamic plugin with optional configuration for bottom edge
-	}).dynamic({ bottom: { direction: 'down', bounce: true } });
+			// add dynamic plugin with optional configuration for bottom edge
+			}).dynamic({ bottom: { direction: 'down', bounce: true } });
+			
+		});
+		
 	});
 </script>
 
@@ -27,45 +59,16 @@
 
 <%def name="main()">
 
-<h1 class="blue">Clustered Tweet images for </h1>
+<h1 class="blue">Clustered Tweet images for ${user.username}</h1>
 
 <div class="row">
-	<ul class="thumbnails">
-	% for index, tweet in representative.iteritems():
-	<li>
-		% if tweet.image:
-		<img src="${tweet.image}" rel="#cluster${index}" title="${tweet.message}" class="thumbnail pointer">
-		% else:
-			<pre style="width: 200;" class="pointer" rel="#cluster${index}">${tweet.message}</pre>
-		% endif
-	    </li>
-	% endfor
-	  </ul>
-	
-	% for index, tweets in enumerate(clusters):
-	<div class="simple_overlay" id="cluster${index}"><a class="close_button"></a>
-		<ul class="thumbnails">
-			% for tweet in tweets:
-			<li>
-			% if tweet.url:
-			<a href="${tweet.url}" target="blanc">
-				% if tweet.image: 
-				<img src="${tweet.image}" title="${tweet.message}" class="thumbnail"/>
-				%else:
-				<div style="width: 200;" class="well thumbnail">${tweet.message}</div>
-				% endif
-			<a>
-			% else:
-			<a><div style="width: 200;" class="well thumbnail">${tweet.message}</div></a>
-			% endif
-			</li>
-			% endfor
-		</ul>
-		<div class="details">
-			<p>${representative[index].message}</p>
-		</div>
+	<div id="loading">
+		<h1>Loading pictures!</h1>
+		<img src="/static/img/loading.gif" width="100" height="100" alt="Loading">
 	</div>
-	% endfor
+	<ul id="representative" class="thumbnails">
+
+	</ul>
 		
 </div>
 </%def>

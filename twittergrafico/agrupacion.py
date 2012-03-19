@@ -1,15 +1,16 @@
+# -*- coding: utf-8 -*-
 import os
 
 class Clustering():
     
-    def __init__(self, tweets, user, text_source='message', rowmodel='none'):
+    def __init__(self, tweets, user, text_source='message', rowmodel='none', clmethod='rb'):
         #tweets is a list of Twitter_Dal objects
         self.tweets = tweets
         self.user = user.screen_name
         self.filename = self.generate_documents_file(text_source)
         self.generate_mat_file(self.filename)
         cluster_number = int(len(tweets)/4)
-        self.cluster_filename = self.generate_cluster_file(self.filename, cluster_number, rowmodel)
+        self.cluster_filename = self.generate_cluster_file(self.filename, cluster_number, rowmodel, clmethod)
         self.clusters = self.generate_clusters(self.cluster_filename, cluster_number)
     
     def generate_documents_file(self, text_source='message'):
@@ -20,6 +21,8 @@ class Clustering():
             text = tweet.message
             if text_source=='keywords' and tweet.keywords:
                 text = tweet.keywords
+            if text_source =='text' and tweet.text:
+                text = tweet.text
             #for now we use just the message
             file.write(unicode(text+'\n').encode("utf-8"))
         file.close()
@@ -31,8 +34,8 @@ class Clustering():
         os.system('doc2mat '+filename+' '+filename+'.mat')
 
     @staticmethod        
-    def generate_cluster_file(filename, cluster_number, rowmodel='none'):
-        os.system('vcluster -showfeatures -rowmodel='+ rowmodel + ' '+filename+'.mat '+str(cluster_number)+' > ' + filename + '.info')
+    def generate_cluster_file(filename, cluster_number, rowmodel='none', clmethod='rb'):
+        os.system('vcluster -showfeatures -clmethod='+ clmethod +' -rowmodel='+ rowmodel + ' '+filename+'.mat '+str(cluster_number)+' > ' + filename + '.info')
         #returns cluster output filename
         return filename+'.mat.clustering.'+str(cluster_number)
         

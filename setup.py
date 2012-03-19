@@ -17,7 +17,7 @@ setup(name='twittergrafico',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=False,
-      install_requires=['bottle==0.10.6', 'mako>=0.4.1', 'httplib2', 'lxml', 'python-twitter', 'pymongo'
+      install_requires=['bottle==0.10.6', 'mako>=0.4.1', 'webhelpers', 'httplib2', 'lxml', 'python-twitter', 'pymongo'
           # -*- Extra requirements: -*-
       ],
       entry_points="""

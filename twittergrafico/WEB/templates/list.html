@@ -1,60 +1,51 @@
 <%inherit file="main.html"/>
 <%def name="scripts()">
-<script src="/static/tooltip/jquery.tools.min.js" type="text/javascript" charset="utf-8"></script>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-	$("img[rel]").overlay();
-	// initialize tooltip
-	$("img[title]").tooltip({
-
-	   // tweak the position
-	   offset: [10, 2],
-
-	   // use the "slide" effect
-	   effect: 'slide'
-
-	// add dynamic plugin with optional configuration for bottom edge
-	}).dynamic({ bottom: { direction: 'down', bounce: true } });
-	});
-</script>
 
 <link rel="stylesheet" href="static/css/overlay.css">
 <link rel="stylesheet" href="static/css/tooltip.css">
+<script src="/static/tooltip/jquery.tools.min.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+	$(window).load(function() {
+		$.post("/list", {}, function(data){
+			for(message in data['messages']){
+				$('#loading').remove();
+				$('ul.thumbnails').append('<li class="span3"><a class="thumbnail"><img src="'+ data['messages'][message]['image'] +'" rel="#tweet'+ data['messages'][message]['id'] +'" title="'+ data['messages'][message]['message'] +'"></a></li>');
+				$('div.row').append('<div class="simple_overlay" id="tweet'+ data['messages'][message]['id']+ '"><a class="close_button"></a><div><a href="'+ data['messages'][message]['url'] +'" target="blanc" ><img src="'+ data['messages'][message]['image'] +'" title="'+ data['messages'][message]['message'] +'" class="thumbnail"/></a></div><div class="details"><p>'+ data['messages'][message]['message'] +'</p></div></div>');
+			}
+		
+			$("img[rel]").overlay();
+			// initialize tooltip
+			$("img[title]").tooltip({
+
+			   // tweak the position
+			   offset: [10, 2],
+
+			   // use the "slide" effect
+			   effect: 'slide'
+
+			// add dynamic plugin with optional configuration for bottom edge
+			}).dynamic({ bottom: { direction: 'down', bounce: true } });
+			
+		});
+		
+	});
+</script>
+
 </%def>
 
 
 <%def name="main()">
-<h1 class="blue">Tweet images for jivasquez0</h1>
+<h1 class="blue">Tweet images for ${user.username}</h1>
 
 <div class="row">
-	<ul class="thumbnails">
-	% for tweet in messages:
-		% if tweet.image:
-			<% massive = '' %>
-			% if tweet.massive:
-				<% massive = 'massive' %>
-			% endif
-		<li class="span3 ${massive}">
-		<a class="thumbnail">
-		<img src="${tweet.image}" rel="#tweet${tweet.id}" title="${tweet.message}">
-		</a>
-	    </li>
-		% endif
-	% endfor
-	</ul>
-	
-	% for tweet in messages:
-	% if tweet.image:
-	<div class="simple_overlay" id="tweet${tweet.id}"><a class="close_button"></a>
-		<div><a href="${tweet.url}" target="blanc" ><img src="${tweet.image}" title="${tweet.message}" class="thumbnail"/></a></div>
-	
-		<div class="details">
-			<p>${tweet.message}</p>
-		</div>		
+	<div id="loading">
+		<h1>Loading pictures!</h1>
+		<img src="/static/img/loading.gif" width="100" height="100" alt="Loading">
 	</div>
-	% endif
-	% endfor
+	<ul class="thumbnails">
+
+	</ul>
 		
 </div>
 </%def>

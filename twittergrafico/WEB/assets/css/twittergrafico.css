@@ -13,3 +13,7 @@ h1.blue {
     padding-top: 15px;
     background-color: rgba(192,192,192,0.5);
 }
+
+img.thumbnail {
+    max-width: 225px;
+}

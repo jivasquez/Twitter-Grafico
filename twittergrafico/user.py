@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 
 from pymongo import Connection
 
@@ -19,7 +19,7 @@ class User(object):
         connection.disconnect()
         
     @staticmethod
-    def get_user(user_id):
+    def get_user(user_id, host = 'localhost', database = 'twitter_grafico'):
         connection = Connection(host = host)
         result = connection[database].users.find_one({"user_id":self.user_id})
         if result:
@@ -28,7 +28,7 @@ class User(object):
             return None
             
     @staticmethod
-    def find_users_with_many_followers(followers = 3000):
+    def find_users_with_many_followers(followers = 3000, host = 'localhost', database = 'twitter_grafico'):
         connection = Connection(host = host)
         results = connection[database].users.find({"followers": {"$gt": followers}})
         users = []

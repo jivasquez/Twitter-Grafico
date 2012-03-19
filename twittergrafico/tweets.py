@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
 import re
+from datetime import datetime
 
 import httplib2
 from lxml import etree
 import twitter
 from pymongo import Connection
+
 from twittergrafico.agrupacion import Clustering
 from twittergrafico.seleccion import Seleccion
 from twittergrafico.user import User
@@ -19,13 +22,15 @@ class Twitter_DAO(object):
         self.id = tweet.id
         self.user = tweet.user.id
         self.message = tweet.text
-        self.created_at = tweet.created_at
+        #The date comes in GTM
+        self.created_at = datetime.strptime(tweet.created_at,"%a %b %d %H:%M:%S +0000 %Y")
         self.url = self.get_url(self.message)
         User(tweet.user.id, tweet.user.screen_name, tweet.user.followers_count).save()
         connection = Connection(host = host)
         result = connection[database].tweets.find_one({"id":self.id})
         self.image = None
         self.keywords = None
+        self.text = None
         self.massive = False
         self.check_massive_users(tweet.user)
         if result:
@@ -46,8 +51,11 @@ class Twitter_DAO(object):
         self.message = message
         self.image = image
         self.url = url
+        self.massive = False
+        self.text = message
+        self.created_at = None'''
     
-    @staticmethod
+    '''@staticmethod
     def get_twitter_messages(user, limit):
         host = 'localhost'
         database = 'twitter_grafico'
@@ -73,10 +81,21 @@ class Twitter_DAO(object):
         connection = Connection(host = host)
         result = connection[database].tweets.find_one({"id":self.id})
         if result:
-            connection[database].tweets.save(self.__dict__.append({"_id": result.get("_id")}))
+            self._id = result.get("_id")
+            connection[database].tweets.update({'_id': result.get("_id")}, self.__dict__)
         else:
             connection[database].tweets.save(self.__dict__)
         connection.disconnect()
+    
+    @staticmethod
+    def get_messages_without_login(user, limit):
+        '''Returns tweets without the need of beeing logged in, its used for retreiving tweets with the script from users with many followers'''
+        api = twitter.Api()
+        tweets = api.GetUserTimeline(user_id=user.user_id, count=limit, include_entities=True)
+        tweet_objects = []
+        for tweet in tweets:
+            tweet_objects.append(Twitter_DAO(tweet))
+        return tweet_objects
     
     @staticmethod
     def get_messages_from_search(search):
@@ -93,6 +112,13 @@ class Twitter_DAO(object):
         if url:
             return url.group(0)
         return None
+        
+    @staticmethod
+    def expire_tweets_before_date(date, host = 'localhost', database = 'twitter_grafico'):
+        '''expire all the tweets created before the given date
+        The date should be a datetime date'''
+        connection = Connection(host = host)
+        results = connection[database].tweets.remove({"created_at":{"$lt": date}})
     
     @staticmethod
     def get_representative_image_keywords(url):

@@ -21,11 +21,14 @@
 				</a>
 		          <ul class="nav">
 		            <li id="home"><a href="/home">Inicio</a></li>
-		            <li id="list"><a href="/list">Lista</a></li>
+		            % if user:
+					<li id="list"><a href="/list">Lista</a></li>
 		            <li id="clustered_tweets"><a href="/clustered_tweets">Clustered Tweets</a></li>
 		            <li id="clustered_keywords"><a href="/clustered_keywords">Clustered Keywords</a></li>
 					<li id="clustered_keywords"><a href="/maxtf">Max TF</a></li>
-					% if not user:
+					<li id="clustered_text"><a href="/clustered_text">Clustered Text</a></li>
+					
+					% else:
 					<li id="register"><a href="/register">Registrar</a></li>
 					% endif
 					</ul>
@@ -88,6 +91,8 @@
 </html>
 
 <%def name="main()">
+</%def>
+<%def name="modals()">
 </%def>
 <%def name="scripts()">
 </%def>

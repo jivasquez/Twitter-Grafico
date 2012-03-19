@@ -1,0 +1,5 @@
+.DS_Store
+*.pyc
+.Python
+build
+twittergrafico.egg-info

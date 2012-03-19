@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 from twittergrafico.filter import Filter
 
@@ -37,11 +38,14 @@ class Seleccion():
     
     @staticmethod
     def get_representative_tweet(cluster, scores):
+        if not cluster:
+            return None
         tweet_scores = {}
         for tweet in cluster:
             if tweet.image:
                 tweet_scores[tweet.id] = 10
-        
+            else:
+                tweet_scores[tweet.id] = 0
         for word in scores:
             for tweet in cluster:
                 #check if word exists on the tweet
