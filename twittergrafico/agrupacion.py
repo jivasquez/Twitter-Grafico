@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
+import unicodedata
+import string
 
 class Clustering():
     
@@ -24,10 +26,42 @@ class Clustering():
             if text_source =='text' and tweet.text:
                 text = tweet.text
             #for now we use just the message
-            file.write(unicode(text+'\n').encode("utf-8"))
+            file.write(unicode(Clustering.clean_text(text, tweet.url)+'\n').encode("utf-8"))
         file.close()
         self.filename = filename
         return filename
+    
+    
+    @staticmethod
+    def clean_text(text, url=None):
+        stopwords = []
+        text_array = []
+        if url:
+            text = text.replace(url, "")
+        text = text.lower()
+        for word in Clustering.get_stopwords():
+            stopwords.append(Clustering.elimina_tildes(word))
+        clean_text = Clustering.elimina_tildes(text)
+        for word in clean_text.split():
+            if word not in stopwords:
+                text_array.append(word)
+        return string.join(text_array)
+    
+    @staticmethod
+    def elimina_tildes(text):
+        #elimina tildes y puntuación en general
+        if type(text) == str:
+            text = unicode(text, "utf-8")
+        texto = ''.join((c for c in unicodedata.normalize('NFD', text ) if unicodedata.category(c) != 'Mn'))
+        for char in string.punctuation:
+            texto = texto.replace(char, "")
+        return texto
+    
+    @staticmethod
+    def get_stopwords():
+        file = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "stopwords.txt"), 'r')
+        stopwords = file.readline()
+        return stopwords.split()
         
     @staticmethod
     def generate_mat_file(filename):

@@ -13,7 +13,7 @@
 				else{
 					$('#representative').append('<li><pre style="width: 200;" class="pointer" rel="#cluster'+ message +'">'+ data['representative'][message]['message'] +'</pre></li>')
 				}
-				$('div.row').append('<div class="simple_overlay" id="cluster'+ message +'"><a class="close_button"></a><div class="details"><p>'+ data['representative'][message]['image'] +'</p></div><ul class="thumbnails"></ul></div>');
+				$('div.row').append('<div class="simple_overlay" id="cluster'+ message +'"><a class="close_button"></a><div class="details"><p>'+ data['representative'][message]['message'] +'</p></div><ul class="thumbnails"></ul></div>');
 				for(tweet in data['clusters'][message]){
 					text = '';
 					if(data['clusters'][message][tweet]['url']){
