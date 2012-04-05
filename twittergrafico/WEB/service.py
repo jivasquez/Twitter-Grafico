@@ -131,7 +131,7 @@ def register_account():
         response.set_cookie("k", user.key, path='/')
         oauth_consumer = oauth.Consumer(key=CONSUMER_KEY, secret=CONSUMER_SECRET)
         oauth_client = oauth.Client(oauth_consumer)
-        resp, content = oauth_client.request(REQUEST_TOKEN_URL, 'POST', body=urllib.urlencode({'oauth_callback':'http://localhost:8080/end_registration'}))
+        resp, content = oauth_client.request(REQUEST_TOKEN_URL, 'POST', body=urllib.urlencode({'oauth_callback':'http://twittergrafico.ignorelist.com/end_registration'}))
         request_token = dict(parse_qsl(content))
         url = "%s?oauth_token=%s" % (AUTHORIZATION_URL, request_token['oauth_token']) 
         redirect(url)
