@@ -23,10 +23,21 @@
 		            <li id="home"><a href="/home">Inicio</a></li>
 		            % if user:
 					<li id="list"><a href="/list">Lista</a></li>
-		            <li id="clustered_tweets"><a href="/clustered_tweets">Clustered Tweets</a></li>
-		            <li id="clustered_keywords"><a href="/clustered_keywords">Clustered Keywords</a></li>
-					<li id="clustered_keywords"><a href="/maxtf">Max TF</a></li>
-					<li id="clustered_text"><a href="/clustered_text">Clustered Text</a></li>
+					<li class="dropdown">
+					    <a href="#"
+					          class="dropdown-toggle"
+					          data-toggle="dropdown">
+					          Tweets Agrupados
+					          <b class="caret"></b>
+					    </a>
+					    <ul class="dropdown-menu">
+					    	<li id="clustered_tweets"><a href="/clustered_tweets">Por Tweets</a></li>
+				            <li id="clustered_keywords"><a href="/clustered_keywords">Por Keywords</a></li>
+							<li id="clustered_text"><a href="/clustered_text">Por Texto</a></li>
+							<li id="clustered_keywords"><a href="/maxtf">Maximizando TF</a></li>
+					    </ul>
+					  </li>
+		            
 					
 					% else:
 					<li id="register"><a href="/register">Registrar</a></li>
