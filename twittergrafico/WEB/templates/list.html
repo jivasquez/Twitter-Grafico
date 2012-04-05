@@ -8,13 +8,13 @@
 <script type="text/javascript">
 	$(window).load(function() {
 		$.post("/list", {}, function(data){
-			for(message in data['messages']){
 				$('#loading').remove();
-				$('ul.thumbnails').append('<li class="span3"><a class="thumbnail"><img src="'+ data['messages'][message]['image'] +'" rel="#tweet'+ data['messages'][message]['id'] +'" title="'+ data['messages'][message]['message'] +'"></a></li>');
-				$('div.row').append('<div class="simple_overlay" id="tweet'+ data['messages'][message]['id']+ '"><a class="close_button"></a><div><a href="'+ data['messages'][message]['url'] +'" target="blanc" ><img src="'+ data['messages'][message]['image'] +'" title="'+ data['messages'][message]['message'] +'" class="thumbnail"/></a></div><div class="details"><p>'+ data['messages'][message]['message'] +'</p></div></div>');
+			for(message in data['messages']){
+				$('ul.thumbnails').append('<li class="span3"><a class="thumbnail" data-toggle="modal" href="#tweet'+ data['messages'][message]['id'] +'"><img src="'+ data['messages'][message]['image'] +'" title="'+ data['messages'][message]['message'] +'"></a></li>');
+				$('#modals').append('<div class="modal hide fade" id="tweet'+ data['messages'][message]['id']+'" ><div class="modal-header"><a class="close" data-dismiss="modal">×</a><h3>'+ data['messages'][message]['message'] +'</h3></div><div class="modal-body"><a href="'+ data['messages'][message]['url'] +'" target="blanc" ><img src="'+ data['messages'][message]['image'] +'" title="'+ data['messages'][message]['message'] +'" class="thumbnail"/></a></div></div>');
+				
 			}
 		
-			$("img[rel]").overlay();
 			// initialize tooltip
 			$("img[title]").tooltip({
 
@@ -48,4 +48,10 @@
 	</ul>
 		
 </div>
+</%def>
+
+<%def name="modals()">
+	<div id="modals">
+		
+	</div>
 </%def>

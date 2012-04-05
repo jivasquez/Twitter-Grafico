@@ -66,7 +66,7 @@ class Seleccion():
         normalized_scores = {}
         for tweet in cluster:
             count = len(tweet.message.split(" "))
-            normalized_scores[tweet.id] = tweet_scores.get(tweet.id, 0)/count
+            normalized_scores[tweet.id] = float(tweet_scores.get(tweet.id, 0))/float(count)
         return normalized_scores
                 
     @staticmethod

@@ -8,12 +8,13 @@
 			$('#loading').remove();
 			for(message in data['representative']){
 				if(data['representative'][message]['image']){
-					$('#representative').append('<li class="span3"><a class="thumbnail"><img src="'+ data['representative'][message]['image'] +'" rel="#cluster'+ message +'" title="'+ data['representative'][message]['message'] +'"></a></li>');
+					$('#representative').append('<li class="span3"><a class="thumbnail" href="#cluster'+ message +'" data-toggle="modal"><img src="'+ data['representative'][message]['image'] +'" rel="#cluster'+ message +'" title="'+ data['representative'][message]['message'] +'"></a></li>');
 				}
 				else{
-					$('#representative').append('<li><pre style="width: 200;" class="pointer" rel="#cluster'+ message +'">'+ data['representative'][message]['message'] +'</pre></li>')
+					$('#representative').append('<li><pre style="width: 200;" class="pointer" data-toggle="modal" data-target="#cluster'+ message +'">'+ data['representative'][message]['message'] +'</pre></li>')
 				}
-				$('div.row').append('<div class="simple_overlay" id="cluster'+ message +'"><a class="close_button"></a><div class="details"><p>'+ data['representative'][message]['message'] +'</p></div><ul class="thumbnails"></ul></div>');
+				//$('div.row').append('<div class="simple_overlay" id="cluster'+ message +'"><a class="close_button"></a><div class="details"><p>'+ data['representative'][message]['message'] +'</p></div><ul class="thumbnails"></ul></div>');
+				$('#modals').append('<div class="modal hide fade" id="cluster'+ message+'" ><div class="modal-header"><a class="close" data-dismiss="modal">×</a><h3>'+ data['representative'][message]['message'] +'</h3></div><div class="modal-body"><ul class="thumbnails"></ul></div></div>');
 				for(tweet in data['clusters'][message]){
 					text = '';
 					if(data['clusters'][message][tweet]['url']){
@@ -29,12 +30,12 @@
 					else{
 						text = '<a><div style="width: 200;" class="well thumbnail">'+ data['clusters'][message][tweet]['message'] +'</div></a>';
 					}
-					$('#cluster'+ message +' ul').append('<li>'+ text +'</li>');
+					$('#cluster'+ message +' .modal-body ul').append('<li>'+ text +'</li>');
 				}
 			}
-		
-			$("img[rel]").overlay();
-			$("pre[rel]").overlay();
+			
+			
+
 			// initialize tooltip
 			$("img[title]").tooltip({
 
@@ -71,4 +72,9 @@
 	</ul>
 		
 </div>
+</%def>
+<%def name="modals()">
+	<div id="modals">
+		
+	</div>
 </%def>

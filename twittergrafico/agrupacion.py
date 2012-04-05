@@ -38,6 +38,7 @@ class Clustering():
         text_array = []
         if url:
             text = text.replace(url, "")
+        text = Clustering.remove_user_tags(text)
         text = text.lower()
         for word in Clustering.get_stopwords():
             stopwords.append(Clustering.elimina_tildes(word))
@@ -56,6 +57,14 @@ class Clustering():
         for char in string.punctuation:
             texto = texto.replace(char, "")
         return texto
+    
+    @staticmethod
+    def remove_user_tags(text):
+        clean_text_array = []
+        for word in text.split():
+            if not word.startswith("@"):
+                clean_text_array.append(word)
+        return string.join(clean_text_array)
     
     @staticmethod
     def get_stopwords():
