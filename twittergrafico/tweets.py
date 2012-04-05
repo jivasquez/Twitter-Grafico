@@ -17,7 +17,7 @@ class Twitter_DAO(object):
     
     # I have to include the Mongo config
     
-    def __init__(self, tweet, host = 'localhost', database = 'twitter_grafico'):
+    def __init__(self, tweet, host = 'localhost', database = 'twitter_grafico', displayed = False):
         
         self.id = tweet.id
         self.user = tweet.user.id
@@ -32,6 +32,8 @@ class Twitter_DAO(object):
         self.keywords = None
         self.text = None
         self.massive = False
+        if displayed:
+            self.displayed = True
         self.check_massive_users(tweet.user)
         if result:
             self.image = result.get('image')
@@ -74,7 +76,7 @@ class Twitter_DAO(object):
         tweets = api.GetFriendsTimeline(user=user.user_id, count=limit, include_entities=True)
         tweet_objects = []
         for tweet in tweets:
-            tweet_objects.append(Twitter_DAO(tweet))
+            tweet_objects.append(Twitter_DAO(tweet, displayed = True))
         return tweet_objects
 
     def save(self, host = 'localhost', database = 'twitter_grafico'):
@@ -103,7 +105,7 @@ class Twitter_DAO(object):
         tweets = api.GetSearch(term=search, per_page=50)
         tweet_objects = []
         for tweet in tweets:
-            tweet_objects.append(Twitter_DAO(tweet))
+            tweet_objects.append(Twitter_DAO(tweet, displayed = True))
         return tweet_objects
     
     @staticmethod
