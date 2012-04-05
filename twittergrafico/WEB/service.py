@@ -124,7 +124,7 @@ def register_account():
     if len(username) < 6 or password != repeat or len(password)< 6:
         return render('register.html')
     else:
-        user = User(username, passhash(password))
+        user = Account(username, passhash(password))
         # this key is used once on the registration to know who was the user trying to authenticate with Twitter
         user.key = hashlib.sha256(username + password).hexdigest()
         user.save()
